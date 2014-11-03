@@ -51,6 +51,15 @@ int main(int argc, char** argv){
 	float endx=0;
 	float endy=0;
 
+	float startpx=0;
+	float startpy=0;
+	float endpx=0;
+	float endpy=0;
+
+	float leftmost=0;
+	float rightmost=0;
+	float upmost=0;
+	float downmost=0;
 
 	float diff=0;
 	float diffx=0;
@@ -115,8 +124,9 @@ int main(int argc, char** argv){
 		swipefirst=1;
 				SwipeGesture tgesture=tgesturelist[0];
 			Vector direction=tgesture.direction();
+			Vector position=tgesture.position();
 
-				if (direction[1]<-0.8 && direction[0]<0.2 && direction[0]>-0.2)
+				if (direction[1]<-0.85 && direction[0]<0.1 && direction[0]>-0.1)
 					down++;
 				else if (direction[0]>0.7 && direction[1]<0.3 && direction[1]>-0.3)
 					right++;
@@ -138,6 +148,13 @@ int main(int argc, char** argv){
 						startx=direction[0];
 			
 						starty=direction[1];
+						startpx=position[0];
+						startpy=position[1];
+
+				leftmost=position[0];
+				rightmost=position[0];
+				upmost=position[1];
+				downmost=position[1];
 		
 				}
 				if (start!=0){
@@ -158,8 +175,10 @@ int main(int argc, char** argv){
 					leftrightchange++;
 				if (lastdirection[0]<0.5 && lastdirection[1]>0.5 && direction[0]>0.5 && direction[1]<0.5)
 					uprightchange++;
-				if (lastdirection[1]>0.5 && direction[1]<-0.5)
-					updownchange++;
+				if (lastdirection[1]>0.8 && direction[1]<-0.8)
+					{updownchange++;
+					//std::cout<<"Updown at Frame "<<firstframe<<std::endl;
+					}
 				if (lastdirection[0]>0.5 && direction[0]<-0.5)
 					rightleftchange++;
 				if (lastdirection[0]>0.7 && abs(direction[0])<0.5 && abs(lastdirection[1])<0.3 && direction[1]<-0.7 )
@@ -177,10 +196,19 @@ int main(int argc, char** argv){
 
 
 
+				if (leftmost>position[0])
+					leftmost=position[0];
+				if (rightmost<position[0])
+				{	//std::cout<<"Rightmost is "<<rightmost<<std::endl;
+					rightmost=position[0];}
+				if (upmost<position[1])
+					upmost=position[1];
+				if (downmost>position[1])
+					downmost=position[1];
 
 
-
-
+			//	std::cout<<"X position is "<<position[0]<<"Y position is "<<position[1]<<std::endl;
+			//	std::cout<<"Rightmost is "<<rightmost<<std::endl;
 
 
 
@@ -188,6 +216,8 @@ int main(int argc, char** argv){
 
 				endx=direction[0];
 				endy=direction[1];
+				endpx=position[0];
+				endpy=position[1];
 
 				sumx=sumx+direction[0];
 				sumy=sumy+direction[1];
@@ -221,7 +251,7 @@ int main(int argc, char** argv){
 
 
 			if (firstframe>10){
-			/*std::cout<<"DIFF "<<DIFF<<std::endl;
+	/*		std::cout<<"DIFF "<<DIFF<<std::endl;
 			std::cout<<"down is "<<down<<std::endl;
 			std::cout<<"right is "<<right<<std::endl;
 			std::cout<<"left is "<<left<<std::endl;
@@ -248,10 +278,22 @@ int main(int argc, char** argv){
 			std::cout<<"StartX is "<<startx<<std::endl;
 			std::cout<<"StartY is "<<starty<<std::endl;
 		std::cout<<"EndX is "<<endx<<std::endl;
-			std::cout<<"EndY is "<<endy<<std::endl;*/
+			std::cout<<"EndY is "<<endy<<std::endl;
+
+			std::cout<<"Start Position is x= "<<startpx<<" y= "<<startpy<<std::endl;
+			std::cout<<"End Position is x= "<<endpx<<" y= "<<endpy<<std::endl;*/
+			float distance=pow((pow(startpx-endpx,2)+pow(startpy-endpy,2)),0.5);
+			/*std::cout<<"Distance is "<<distance<<std::endl;
+
+			std::cout<<"Leftmost is "<<leftmost<<std::endl;
+
+			std::cout<<"Rightmost is "<<rightmost<<std::endl;
+
+			std::cout<<"Upmost is "<<upmost<<std::endl;
+				std::cout<<"Downmost is "<<downmost<<std::endl;
 
 
-
+				std::cout<<"Total Frame is "<<firstframe<<std::endl;*/
 			/*if (down>10 && up<firstframe && right==0 && left==0 && leftdown==0 && leftdown2==0 
 				&& other==0 && sumx<5 && sumy<-15 && uprightchange==0 && leftrightchange==0 && rightleftchange==0 && updownchange<=1
 				&& rightdownchange==0 && rightupchange==0 && downrightchange==0 &&  abs(endx)<0.2 && endy<-0.8)
@@ -273,6 +315,7 @@ int main(int argc, char** argv){
 						vote[9]+=10;
 						vote[5]+=20;
 						vote[6]+=10;
+						vote[8]+=5;
 					}		
 					else 
 					{
@@ -285,6 +328,7 @@ int main(int argc, char** argv){
 					if (uprightchange>0)
 					{
 						vote[5]+=100;
+						vote[8]+=10;
 					}		
 					else 
 					{
@@ -292,39 +336,43 @@ int main(int argc, char** argv){
 					}
 					if (updownchange>0)
 					{
-						vote[1]+=20;
+						//vote[1]+=10;
 						vote[4]+=30;
-						vote[6]+=10;
-						vote[7]+=20;
-						vote[9]+=30;
+						vote[6]+=50;
+						//vote[7]+=20;
+						vote[9]+=50;
 						vote[0]+=20;
+						vote[8]+=10;
 					}
 					else 
 
 					{
-						vote[1]-=20;
+					
 						vote[4]-=30;
-						vote[6]-=10;
+						vote[6]-=30;
 						vote[7]-=20;
 						vote[9]-=30;
-						vote[0]-=20;
+						
 
 					}
 					if (rightdownchange>0)
 					{
 						vote[2]+=20;
-						vote[7]+=80;
+						vote[7]+=60;
+						vote[8]+=20;
 					}
 					else
 					{
 					vote[2]-=20;
-						vote[7]-=80;
+						vote[7]-=40;
+						vote[8]-=10;
 					}
 					if (leftrightchange>0)
 					{
 						vote[2]+=40;
 						vote[3]+=40;
 						vote[4]+=30;
+						vote[8]+=10;
 					}
 					else
 					{
@@ -359,11 +407,13 @@ int main(int argc, char** argv){
 						vote[4]+=20;
 						vote[5]+=50;
 						vote[6]+=20;
+						vote[8]+=20;
 					}
 					else 
 					{	vote[4]-=20;
 						vote[5]-=50;
 						vote[6]-=0;
+						vote[8]-=5;
 
 					}
 					if (endx>0.7)
@@ -401,15 +451,22 @@ int main(int argc, char** argv){
 						
 					
 					}
-					if (left+right+other+leftdown+rightdown>3)
+
+
+					if (distance<100)
+					{
+						vote[8]+=30;
+						vote[0]+=30;
+					}
+					if (left+right+leftdown+rightdown+other>5)
 						{
-							vote[1]-=50;
+							vote[1]-=30;
 						}
-					if (DIFF>=3)
+					/*if (DIFF>=3)
 					{
 						//vote[3]+=30;
 						vote[8]+=30;
-					}
+					}*/
 					if (sumx>0)
 					{
 						vote[9]-=30;
@@ -422,6 +479,36 @@ int main(int argc, char** argv){
 						vote[6]+=20;
 
 					}
+
+
+					if ((endpy-downmost)>30)
+					{
+						vote[8]+=50;
+						vote[0]+=50;
+						vote[6]+=30;
+						vote[5]+=30;
+					}
+					else
+					{
+						vote[8]-=50;
+						vote[0]-=50;
+						vote[6]-=10;
+						vote[5]-=30;
+					}
+					if (right>5)
+					{
+						vote[2]+=30;
+						vote[5]+=30;
+						vote[7]+=20;
+					}
+					else 
+					{
+						vote[2]-=30;
+						vote[5]-=30;
+						vote[7]-=20;
+					}
+
+
 				//	else 
 
 
