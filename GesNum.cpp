@@ -81,6 +81,9 @@ int main(int argc, char** argv){
 
 	GestureList lastgesturelist;
 
+	if(!controller.isConnected())
+		{std::cout<<"Plugin in your Leap Motion Controller"<<std::endl;}
+
 	while(!controller.isConnected())
 	{
 
